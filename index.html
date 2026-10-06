@@ -26,6 +26,19 @@
       font-family: "Trebuchet MS", "Segoe UI", sans-serif;
       font-synthesis: none;
     }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --ink: #e7eee8;
+      --ink-soft: #b2c2b7;
+      --paper: #17201b;
+      --surface: #202b24;
+      --line: #35443a;
+      --lime: #d9ed82;
+      --coral: #f39a7d;
+      --blue: #8bb8c4;
+      --muted: #9aa99e;
+      --shadow: 0 16px 38px rgba(0, 0, 0, .22);
+    }
     * { box-sizing: border-box; }
     body { margin: 0; min-width: 320px; background: var(--paper); color: var(--ink); }
     button, input, select { font: inherit; }
@@ -112,6 +125,67 @@
     .delete-button { border: 0; background: transparent; color: #a3ada5; cursor: pointer; font-size: 17px; line-height: 1; }
     .delete-button:hover { color: #b54d3e; }
     .toast { position: fixed; right: 22px; bottom: 22px; z-index: 5; padding: 12px 16px; border-radius: 6px; background: var(--ink); color: #fff; box-shadow: var(--shadow); font-size: 12px; animation: rise .2s ease-out; }
+    :root[data-theme="dark"] .sidebar { background: #101813; }
+    :root[data-theme="dark"] .brand-mark,
+    :root[data-theme="dark"] .nav-item[aria-current="page"],
+    :root[data-theme="dark"] .primary-button,
+    :root[data-theme="dark"] .check-button[aria-pressed="true"] { color: #203c33; }
+    :root[data-theme="dark"] .primary-button { background: var(--lime); }
+    :root[data-theme="dark"] .progress-panel { background: #344332; border-color: #4a5a43; }
+    :root[data-theme="dark"] .progress-ring { background: conic-gradient(var(--lime) var(--progress), rgba(217,237,130,.14) 0); }
+    :root[data-theme="dark"] .progress-ring::before { background: #344332; }
+    :root[data-theme="dark"] .progress-copy p { color: #d0d8c7; }
+    :root[data-theme="dark"] .field { background: #17221b; color: var(--ink); }
+    :root[data-theme="dark"] .task-tag,
+    :root[data-theme="dark"] .insight-tile { background: #2a372f; color: #c0cdc3; }
+    :root[data-theme="dark"] .stat-symbol,
+    :root[data-theme="dark"] .day-track { background: #303d34; color: var(--ink); }
+    :root[data-theme="dark"] .toast { background: var(--lime); color: #203c33; }
+    :root[data-theme="dark"] .day-cell.today .day-track { background: #3a4734; }
+    :root[data-theme="dark"] .habit-mark { color: #203c33; }
+    #app-shell[hidden], #auth-root[hidden] { display: none !important; }
+    .auth-page { min-height: 100vh; display: grid; place-items: center; padding: 28px; background: radial-gradient(ellipse at 12% 90%, rgba(217,237,130,.22), transparent 38%), var(--paper); }
+    .auth-card { display: grid; grid-template-columns: minmax(280px,.9fr) minmax(340px,1.1fr); width: min(900px, 100%); min-height: 560px; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); }
+    .auth-brand-panel { display: flex; flex-direction: column; justify-content: space-between; padding: 34px; background: var(--ink); color: #f5f6ef; }
+    :root[data-theme="dark"] .auth-brand-panel { background: #101813; }
+    .auth-brand-panel .brand { padding: 0; }
+    .auth-brand-panel .brand-mark { color: #203c33; }
+    .auth-promise { max-width: 330px; }
+    .auth-promise .eyebrow { color: #c1d0b6; }
+    .auth-promise h1 { max-width: 320px; font-size: 38px; }
+    .auth-promise p:last-child { max-width: 285px; margin: 0; color: #c1d0c6; font-size: 13px; line-height: 1.6; }
+    .auth-footnote { margin: 0; color: #c1d0c6; font-size: 11px; line-height: 1.5; }
+    .auth-form-panel { align-self: center; padding: 40px clamp(24px, 5vw, 58px); }
+    .auth-form-panel h2 { margin: 0 0 8px; font: 400 27px Georgia, serif; }
+    .auth-subtitle { margin: 0 0 22px; color: var(--ink-soft); font-size: 12px; line-height: 1.55; }
+    .auth-fields { display: grid; gap: 13px; }
+    .auth-field, .setting-field { display: grid; gap: 6px; color: var(--ink-soft); font-size: 11px; font-weight: 700; }
+    .auth-field .field, .setting-field .field { font-weight: 400; }
+    .auth-submit { width: 100%; margin-top: 17px; }
+    .auth-switch { margin: 17px 0 0; color: var(--ink-soft); font-size: 11px; text-align: center; }
+    .auth-message { margin: 12px 0 0; padding: 10px 12px; border-radius: 6px; background: #f8e6df; color: #843c2e; font-size: 11px; line-height: 1.45; }
+    :root[data-theme="dark"] .auth-message { background: #4b302a; color: #ffd2c4; }
+    .topbar-actions { display: flex; align-items: center; gap: 16px; }
+    .profile-button { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 50%; background: var(--lime); color: #203c33; cursor: pointer; font: 700 13px Georgia, serif; }
+    .profile-button:hover { outline: 3px solid rgba(217,237,130,.28); }
+    .settings-form { display: grid; gap: 0; }
+    .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid var(--line); }
+    .setting-row:first-child { border-top: 0; padding-top: 0; }
+    .setting-copy strong { display: block; margin-bottom: 4px; color: var(--ink); font-size: 12px; }
+    .setting-copy span { display: block; max-width: 470px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .setting-select, .setting-time { width: 180px; max-width: 42vw; }
+    .setting-toggle { flex: 0 0 auto; width: 19px; height: 19px; accent-color: #426b55; }
+    .settings-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 18px; }
+    .profile-avatar { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: var(--lime); color: #203c33; font: 700 20px Georgia, serif; }
+    .profile-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+    .profile-head h2 { margin: 0 0 4px; font: 400 21px Georgia, serif; }
+    .profile-head p { margin: 0; color: var(--muted); font-size: 11px; }
+    .profile-details { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+    .profile-detail { padding: 14px; border-radius: 6px; background: var(--paper); }
+    .profile-detail span { display: block; margin-bottom: 7px; color: var(--muted); font-size: 10px; }
+    .profile-detail strong { color: var(--ink); font-size: 12px; overflow-wrap: anywhere; }
+    .notice-copy { color: var(--muted); font-size: 10px; line-height: 1.55; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
     @keyframes rise { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
     @media (max-width: 940px) {
       .app-shell { grid-template-columns: 205px minmax(0,1fr); }
@@ -125,7 +199,7 @@
       .app-shell { display: block; padding-bottom: 69px; }
       .sidebar { position: fixed; z-index: 4; inset: auto 0 0; min-height: 0; height: 64px; padding: 6px 10px; border-top: 1px solid rgba(255,255,255,.14); }
       .brand, .workspace-label, .sidebar-bottom { display: none; }
-      .nav-list { height: 100%; grid-template-columns: repeat(4,1fr); gap: 4px; }
+      .nav-list { height: 100%; grid-template-columns: repeat(5,1fr); gap: 4px; }
       .nav-item { min-height: 50px; padding: 4px 2px; flex-direction: column; justify-content: center; gap: 3px; border-radius: 6px; font-size: 9px; }
       .nav-glyph { font-size: 16px; }
       .main-area { padding: 0 17px 28px; }
@@ -146,12 +220,21 @@
       .panel { padding: 17px; }
       .view-intro { margin-bottom: 17px; }
       .habit-form { grid-template-columns: minmax(0,1fr) 42px; }
+      .auth-page { padding: 12px; }
+      .auth-card { grid-template-columns: 1fr; min-height: 0; }
+      .auth-brand-panel { display: none; }
+      .auth-form-panel { padding: 26px 20px; }
+      .setting-row { align-items: start; }
+      .setting-select, .setting-time { width: 145px; }
+      .topbar-actions { gap: 10px; }
+      .today-date { font-size: 10px; }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
   </style>
 </head>
 <body>
-  <div class="app-shell">
+  <div id="auth-root"></div>
+  <div class="app-shell" id="app-shell" hidden>
     <aside class="sidebar" aria-label="Main navigation">
       <div class="brand"><span class="brand-mark">d.</span><span>daymark</span></div>
       <div class="workspace-label">Your space</div>
@@ -160,16 +243,21 @@
         <button class="nav-item" data-view="tasks"><span class="nav-glyph">☷</span><span>Tasks</span></button>
         <button class="nav-item" data-view="habits"><span class="nav-glyph">✳</span><span>Habits</span></button>
         <button class="nav-item" data-view="insights"><span class="nav-glyph">↗</span><span>Insights</span></button>
+        <button class="nav-item" data-view="settings"><span class="nav-glyph">⚙</span><span>Settings</span></button>
       </nav>
       <div class="sidebar-bottom"><strong>Small steps count.</strong>Keep showing up for the things you care about.</div>
     </aside>
     <div class="main-area">
-      <header class="topbar"><div class="crumb" id="breadcrumb">Your space / Today</div><div class="today-date"><span class="date-dot"></span><span id="date-label"></span></div></header>
+      <header class="topbar"><div class="crumb" id="breadcrumb">Your space / Today</div><div class="topbar-actions"><div class="today-date"><span class="date-dot"></span><span id="date-label"></span></div><button class="profile-button" data-view="profile" id="profile-button" aria-label="Open profile" title="Profile">D</button></div></header>
       <main class="content" id="content" aria-live="polite"></main>
     </div>
   </div>
   <script>
     const STORE_KEY = "daymark-v1";
+    const USERS_KEY = "daymark-users-v1";
+    const SESSION_DATA_PREFIX = "daymark-profile-data-v1:";
+    const DEFAULT_SETTINGS = { theme: "light", notificationsEnabled: false, taskReminders: true, quoteNotifications: true, quoteEveryHours: 6, reminderTime: "18:00", lastQuoteAt: Date.now(), lastReminderDate: "" };
+    const QUOTES = ["Small steps still move you forward.", "You don't have to finish everything today; just keep your promise to begin.", "Consistency is built one ordinary day at a time.", "Progress counts, even when it is quiet.", "Make the next choice a kind one."];
     const today = localDate(new Date());
     const starterData = {
       tasks: [
@@ -185,9 +273,14 @@
         { id: "h4", name: "Read before bed", symbol: "⌑", tint: "#eee2ee", history: [offsetDate(-5), offsetDate(-4), offsetDate(-3), offsetDate(-2)] }
       ]
     };
-    let state = loadState();
+    let users = loadUsers();
+    let currentUser = null;
+    let state = structuredClone(starterData);
+    let authMode = Object.keys(users).length ? "login" : "register";
+    let authMessage = "";
     let currentView = "today";
     let toastTimer;
+    let reminderTimer;
 
     function localDate(date) {
       const year = date.getFullYear();
@@ -200,14 +293,99 @@
       date.setDate(date.getDate() + days);
       return localDate(date);
     }
-    function loadState() {
+    function loadUsers() {
       try {
-        const saved = JSON.parse(localStorage.getItem(STORE_KEY));
+        const saved = JSON.parse(localStorage.getItem(USERS_KEY));
+        return saved && typeof saved === "object" && !Array.isArray(saved) ? saved : {};
+      } catch (error) { console.warn("Could not read local Daymark profiles.", error); return {}; }
+    }
+    function saveUsers() { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+    function profileDataKey(usernameKey) { return `${SESSION_DATA_PREFIX}${encodeURIComponent(usernameKey)}`; }
+    function loadState(storageKey = STORE_KEY) {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey));
         if (saved && Array.isArray(saved.tasks) && Array.isArray(saved.habits)) return saved;
       } catch (error) { console.warn("Could not read saved Daymark data.", error); }
       return structuredClone(starterData);
     }
-    function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+    function saveState() {
+      if (currentUser) localStorage.setItem(profileDataKey(currentUser.usernameKey), JSON.stringify(state));
+    }
+    function bytesToBase64(bytes) { return btoa(Array.from(bytes, byte => String.fromCharCode(byte)).join("")); }
+    function base64ToBytes(value) { return Uint8Array.from(atob(value), character => character.charCodeAt(0)); }
+    async function hashPassword(password, saltValue) {
+      if (!crypto.subtle) throw new Error("Password security is unavailable here. Open Daymark from its HTTPS address and try again.");
+      const material = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
+      const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt: base64ToBytes(saltValue), iterations: 150000, hash: "SHA-256" }, material, 256);
+      return bytesToBase64(new Uint8Array(bits));
+    }
+    function newSalt() { return bytesToBase64(crypto.getRandomValues(new Uint8Array(16))); }
+    function normalizeUsername(value) { return value.trim().toLowerCase(); }
+    function normalizePhone(value) { return value.replace(/\D/g, ""); }
+    function saveCurrentUser() { if (currentUser) { users[currentUser.usernameKey] = currentUser; saveUsers(); } }
+    function applyTheme(theme) {
+      const dark = theme === "dark" || (theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.dataset.theme = dark ? "dark" : "light";
+    }
+    function startSession(user) {
+      currentUser = user;
+      currentUser.settings = { ...DEFAULT_SETTINGS, ...currentUser.settings };
+      users[currentUser.usernameKey] = currentUser;
+      saveCurrentUser();
+      state = loadState(profileDataKey(currentUser.usernameKey));
+      if (!localStorage.getItem(profileDataKey(currentUser.usernameKey))) saveState();
+      currentView = "today";
+      authMessage = "";
+      applyTheme(currentUser.settings.theme);
+      render();
+      startReminderChecks();
+    }
+    async function registerAccount(form) {
+      const fullName = form.elements.fullName.value.trim();
+      const username = form.elements.username.value.trim();
+      const usernameKey = normalizeUsername(username);
+      const phone = form.elements.phone.value.trim();
+      const password = form.elements.password.value;
+      if (!/^[a-zA-Z0-9._-]{3,24}$/.test(username)) throw new Error("Choose a username with 3–24 letters, numbers, dots, dashes, or underscores.");
+      if (normalizePhone(phone).length < 7) throw new Error("Enter a valid phone number with at least 7 digits.");
+      if (password.length < 8) throw new Error("Use a password with at least 8 characters.");
+      if (password !== form.elements.confirmPassword.value) throw new Error("The passwords do not match.");
+      if (users[usernameKey]) throw new Error("That username already has a profile on this device.");
+      const salt = newSalt();
+      const passwordHash = await hashPassword(password, salt);
+      const firstProfile = Object.keys(users).length === 0;
+      const user = { username, usernameKey, fullName, phone, salt, passwordHash, settings: { ...DEFAULT_SETTINGS } };
+      if (firstProfile && localStorage.getItem(STORE_KEY) && !localStorage.getItem(profileDataKey(usernameKey))) {
+        localStorage.setItem(profileDataKey(usernameKey), localStorage.getItem(STORE_KEY));
+      }
+      users[usernameKey] = user;
+      saveUsers();
+      startSession(user);
+      showToast(`Welcome, ${fullName.split(/\s+/)[0]}.`);
+    }
+    async function signIn(form) {
+      const usernameKey = normalizeUsername(form.elements.username.value);
+      const user = users[usernameKey];
+      if (!user) throw new Error("We couldn't match that username and password.");
+      const attempt = await hashPassword(form.elements.password.value, user.salt);
+      if (attempt !== user.passwordHash) throw new Error("We couldn't match that username and password.");
+      startSession(user);
+    }
+    async function resetPassword(form) {
+      const usernameKey = normalizeUsername(form.elements.username.value);
+      const user = users[usernameKey];
+      if (!user || normalizePhone(form.elements.phone.value) !== normalizePhone(user.phone)) throw new Error("The username and saved phone number don't match this device's profile.");
+      const password = form.elements.password.value;
+      if (password.length < 8) throw new Error("Use a password with at least 8 characters.");
+      if (password !== form.elements.confirmPassword.value) throw new Error("The passwords do not match.");
+      user.salt = newSalt();
+      user.passwordHash = await hashPassword(password, user.salt);
+      users[usernameKey] = user;
+      saveUsers();
+      authMode = "login";
+      authMessage = "Password reset on this device. Sign in with your new password.";
+      renderAuth();
+    }
     function escapeHtml(value) {
       return String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
     }
@@ -233,6 +411,72 @@
       document.body.append(toast);
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => toast.remove(), 2200);
+    }
+    function renderAuth() {
+      const root = document.getElementById("auth-root");
+      const existingProfiles = Object.keys(users).length > 0;
+      const forms = {
+        register: `<h2>Create your profile</h2><p class="auth-subtitle">Your profile and tracker data stay in this browser on this device.</p><form id="signup-form" class="auth-fields"><label class="auth-field">Full name<input class="field" name="fullName" autocomplete="name" maxlength="80" required></label><label class="auth-field">Username<input class="field" name="username" autocomplete="username" minlength="3" maxlength="24" required></label><label class="auth-field">Phone number<input class="field" name="phone" type="tel" autocomplete="tel" required></label><label class="auth-field">Password<input class="field" name="password" type="password" autocomplete="new-password" minlength="8" required></label><label class="auth-field">Confirm password<input class="field" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label><button class="primary-button auth-submit">Create profile</button></form><p class="auth-switch">Already have a profile here? <button class="text-button" data-auth-mode="login">Sign in</button></p>`,
+        login: `<h2>Welcome back</h2><p class="auth-subtitle">Sign in to your local Daymark profile.</p><form id="login-form" class="auth-fields"><label class="auth-field">Username<input class="field" name="username" autocomplete="username" required></label><label class="auth-field">Password<input class="field" name="password" type="password" autocomplete="current-password" required></label><button class="primary-button auth-submit">Sign in</button></form><p class="auth-switch"><button class="text-button" data-auth-mode="recover">Forgot password?</button></p><p class="auth-switch">New to Daymark on this device? <button class="text-button" data-auth-mode="register">Create a profile</button></p>`,
+        recover: `<h2>Reset your password</h2><p class="auth-subtitle">Enter your username and the phone number saved with the profile, then choose a new password.</p><form id="recover-form" class="auth-fields"><label class="auth-field">Username<input class="field" name="username" autocomplete="username" required></label><label class="auth-field">Phone number<input class="field" name="phone" type="tel" autocomplete="tel" required></label><label class="auth-field">New password<input class="field" name="password" type="password" autocomplete="new-password" minlength="8" required></label><label class="auth-field">Confirm new password<input class="field" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label><button class="primary-button auth-submit">Reset password</button></form><p class="notice-copy">Offline reset checks the saved phone number on this device. It does not send an SMS or prove identity.</p><p class="auth-switch"><button class="text-button" data-auth-mode="login">Back to sign in</button></p>`
+      };
+      if (!existingProfiles && authMode === "login") authMode = "register";
+      if (authMode === "register" && existingProfiles && Object.keys(users).length > 0) {
+        forms.register = `<h2>Create another profile</h2><p class="auth-subtitle">Each profile has separate tasks and habits on this device.</p><form id="signup-form" class="auth-fields"><label class="auth-field">Full name<input class="field" name="fullName" autocomplete="name" maxlength="80" required></label><label class="auth-field">Username<input class="field" name="username" autocomplete="username" minlength="3" maxlength="24" required></label><label class="auth-field">Phone number<input class="field" name="phone" type="tel" autocomplete="tel" required></label><label class="auth-field">Password<input class="field" name="password" type="password" autocomplete="new-password" minlength="8" required></label><label class="auth-field">Confirm password<input class="field" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label><button class="primary-button auth-submit">Create profile</button></form><p class="auth-switch"><button class="text-button" data-auth-mode="login">Back to sign in</button></p>`;
+      }
+      root.hidden = false;
+      document.getElementById("app-shell").hidden = true;
+      root.innerHTML = `<main class="auth-page"><div class="auth-card"><section class="auth-brand-panel"><div class="brand"><span class="brand-mark">d.</span><span>daymark</span></div><div class="auth-promise"><p class="eyebrow">A little more intentional</p><h1>Make room for what matters.</h1><p>Tasks, habits, and the small promises you keep to yourself.</p></div><p class="auth-footnote">This profile lives on this device. It doesn't sync to an account online.</p></section><section class="auth-form-panel"><p class="eyebrow">Your space</p>${forms[authMode] || forms.login}<p class="auth-message" id="auth-message" ${authMessage ? "" : "hidden"}>${escapeHtml(authMessage)}</p></section></div></main>`;
+    }
+    function settingsPanel() {
+      const settings = currentUser.settings;
+      const permission = "Notification" in window ? Notification.permission : "unsupported";
+      const permissionLabel = permission === "granted" ? "Browser notifications are allowed." : permission === "denied" ? "Notifications are blocked in browser settings." : permission === "unsupported" ? "This browser does not support system notifications." : "System permission has not been requested.";
+      return `<section class="view-intro"><p class="eyebrow">Make Daymark yours</p><h1>Settings</h1><p>Choose how your space looks and when it nudges you.</p></section><section class="panel"><div class="panel-heading"><div><h2>Preferences</h2><p>Saved to this device and profile</p></div></div><form id="settings-form" class="settings-form"><label class="setting-row"><span class="setting-copy"><strong>Theme</strong><span>Choose light, dark, or follow your device.</span></span><select class="field setting-select" name="theme"><option value="light" ${settings.theme === "light" ? "selected" : ""}>Light</option><option value="dark" ${settings.theme === "dark" ? "selected" : ""}>Dark</option><option value="system" ${settings.theme === "system" ? "selected" : ""}>System</option></select></label><label class="setting-row"><span class="setting-copy"><strong>Daily task reminder</strong><span>When Daymark is open, remind you about unfinished tasks once a day.</span></span><input class="setting-toggle" type="checkbox" name="taskReminders" ${settings.taskReminders ? "checked" : ""}></label><label class="setting-row"><span class="setting-copy"><strong>Reminder time</strong><span>Choose when the daily task reminder should appear.</span></span><input class="field setting-time" type="time" name="reminderTime" value="${escapeHtml(settings.reminderTime)}"></label><label class="setting-row"><span class="setting-copy"><strong>Quote notifications</strong><span>Show an encouraging quote while Daymark is open.</span></span><input class="setting-toggle" type="checkbox" name="quoteNotifications" ${settings.quoteNotifications ? "checked" : ""}></label><label class="setting-row"><span class="setting-copy"><strong>Quote frequency</strong><span>How often an in-app quote reminder may appear.</span></span><select class="field setting-select" name="quoteEveryHours"><option value="4" ${Number(settings.quoteEveryHours) === 4 ? "selected" : ""}>Every 4 hours</option><option value="6" ${Number(settings.quoteEveryHours) === 6 ? "selected" : ""}>Every 6 hours</option><option value="8" ${Number(settings.quoteEveryHours) === 8 ? "selected" : ""}>Every 8 hours</option><option value="12" ${Number(settings.quoteEveryHours) === 12 ? "selected" : ""}>Every 12 hours</option></select></label><label class="setting-row"><span class="setting-copy"><strong>System notifications</strong><span>${permissionLabel} Enable these to show reminders outside the app while it is open.</span></span><input class="setting-toggle" type="checkbox" name="notificationsEnabled" ${settings.notificationsEnabled ? "checked" : ""}></label><div class="settings-actions"><button class="primary-button">Save settings</button><button class="text-button" type="button" data-action="request-notifications">Request notification permission</button></div></form><p class="notice-copy">Offline browsers cannot send scheduled alerts while the app is fully closed. Phone number and password reset are local-only; no SMS or account recovery service is connected.</p></section>`;
+    }
+    function initials(name) { return name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0].toUpperCase()).join(""); }
+    function renderProfile() {
+      const phone = normalizePhone(currentUser.phone);
+      const maskedPhone = phone.length > 4 ? `${"•".repeat(Math.min(6, phone.length - 4))}${phone.slice(-4)}` : phone;
+      const { salt, passwordHash, ...safeProfile } = currentUser;
+      return `<section class="view-intro"><p class="eyebrow">Your local account</p><h1>Profile</h1><p>Manage this profile and its data on this device.</p></section><section class="panel"><div class="profile-head"><div class="profile-avatar">${escapeHtml(initials(currentUser.fullName))}</div><div><h2>${escapeHtml(currentUser.fullName)}</h2><p>@${escapeHtml(currentUser.username)}</p></div></div><div class="profile-details"><div class="profile-detail"><span>Username</span><strong>${escapeHtml(currentUser.username)}</strong></div><div class="profile-detail"><span>Phone number</span><strong>${escapeHtml(maskedPhone)}</strong></div><div class="profile-detail"><span>Tasks</span><strong>${state.tasks.length}</strong></div><div class="profile-detail"><span>Habits</span><strong>${state.habits.length}</strong></div></div><p class="notice-copy" style="margin:18px 0 0">Profile credentials and tracker data are stored in this browser only. They are not encrypted as a complete database; device access and browser storage remain the security boundary.</p><div class="settings-actions"><button class="primary-button" data-action="export-data">Download my data</button><button class="text-button" data-action="sign-out">Sign out</button></div></section>`;
+    }
+    function setAuthMessage(message) {
+      authMessage = message;
+      const node = document.getElementById("auth-message");
+      if (node) { node.textContent = message; node.hidden = !message; }
+      else renderAuth();
+    }
+    function dispatchReminder(title, message) {
+      showToast(`${title}: ${message}`);
+      if (currentUser?.settings.notificationsEnabled && "Notification" in window && Notification.permission === "granted") {
+        try { new Notification(title, { body: message, icon: "./icon.svg", tag: `daymark-${title}` }); }
+        catch (error) { console.warn("Could not show a browser notification.", error); }
+      }
+    }
+    function checkReminders() {
+      if (!currentUser) return;
+      const settings = currentUser.settings;
+      const now = new Date();
+      const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+      const openTasks = state.tasks.filter(task => !task.done).length;
+      if (settings.taskReminders && openTasks && currentTime >= settings.reminderTime && settings.lastReminderDate !== today) {
+        settings.lastReminderDate = today;
+        saveCurrentUser();
+        dispatchReminder("Tasks are waiting", `You still have ${openTasks} unfinished task${openTasks === 1 ? "" : "s"} today.`);
+      }
+      const interval = Number(settings.quoteEveryHours) * 60 * 60 * 1000;
+      if (settings.quoteNotifications && interval > 0 && Date.now() - Number(settings.lastQuoteAt || 0) >= interval) {
+        const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+        settings.lastQuoteAt = Date.now();
+        saveCurrentUser();
+        dispatchReminder("A thought for today", quote);
+      }
+    }
+    function startReminderChecks() {
+      clearInterval(reminderTimer);
+      checkReminders();
+      reminderTimer = setInterval(checkReminders, 30000);
     }
     function taskRows(list, deletable = false) {
       if (!list.length) return '<div class="empty-state">Nothing on your list yet. Add a task to get started.</div>';
@@ -308,12 +552,18 @@
         <section class="panel"><div class="panel-heading"><div><h2>At a glance</h2><p>Your current momentum</p></div></div><div class="insight-grid"><div class="insight-tile"><span>Today's completion</span><strong>${todayRate}%</strong></div><div class="insight-tile"><span>Best active streak</span><strong>${best} day${best === 1 ? "" : "s"}</strong></div><div class="insight-tile"><span>Habit check-ins this week</span><strong>${weekChecks}</strong></div><div class="insight-tile"><span>Habits in your routine</span><strong>${state.habits.length}</strong></div></div></section>
         <section class="panel wide-panel"><div class="panel-heading"><div><h2>Weekly habit rhythm</h2><p>Share of habits checked off each day</p></div></div><div class="week-strip">${weekBars()}</div></section>`;
     }
+    function renderSettings() { return settingsPanel(); }
     function render() {
+      if (!currentUser) { renderAuth(); return; }
+      document.getElementById("auth-root").hidden = true;
+      document.getElementById("app-shell").hidden = false;
+      applyTheme(currentUser.settings.theme);
       const date = new Date();
       document.getElementById("date-label").textContent = date.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+      document.getElementById("profile-button").textContent = initials(currentUser.fullName);
       document.getElementById("breadcrumb").textContent = `Your space / ${currentView[0].toUpperCase()}${currentView.slice(1)}`;
       document.querySelectorAll(".nav-item").forEach(button => button.setAttribute("aria-current", button.dataset.view === currentView ? "page" : "false"));
-      const views = { today: renderToday, tasks: renderTasks, habits: renderHabits, insights: renderInsights };
+      const views = { today: renderToday, tasks: renderTasks, habits: renderHabits, insights: renderInsights, settings: renderSettings, profile: renderProfile };
       document.getElementById("content").innerHTML = views[currentView]();
     }
     function addTask(title) {
@@ -324,12 +574,44 @@
       state.habits.push({ id: crypto.randomUUID(), name: name.trim(), symbol: "✳", tint: "#e7ebc9", history: [] });
       saveState(); render(); showToast("A new habit is ready when you are.");
     }
-    document.addEventListener("click", event => {
+    document.addEventListener("click", async event => {
+      const authModeButton = event.target.closest("[data-auth-mode]");
+      if (authModeButton) { authMode = authModeButton.dataset.authMode; authMessage = ""; renderAuth(); return; }
       const viewButton = event.target.closest("[data-view]");
       if (viewButton) { currentView = viewButton.dataset.view; render(); return; }
       const actionButton = event.target.closest("[data-action]");
       if (!actionButton) return;
       const { action, id } = actionButton.dataset;
+      if (action === "request-notifications") {
+        if (!("Notification" in window)) { showToast("This browser does not support system notifications."); return; }
+        try {
+          const permission = await Notification.requestPermission();
+          currentUser.settings.notificationsEnabled = permission === "granted";
+          saveCurrentUser();
+          render();
+          showToast(permission === "granted" ? "Browser notifications are enabled." : "Notification permission was not granted.");
+        } catch (error) { showToast("Could not request notification permission."); }
+        return;
+      }
+      if (action === "sign-out") {
+        currentUser = null;
+        clearInterval(reminderTimer);
+        state = structuredClone(starterData);
+        authMode = "login";
+        authMessage = "";
+        renderAuth();
+        return;
+      }
+      if (action === "export-data") {
+        const { salt, passwordHash, ...profile } = currentUser;
+        const file = new Blob([JSON.stringify({ profile, tasks: state.tasks, habits: state.habits }, null, 2)], { type: "application/json" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(file);
+        link.download = `daymark-${currentUser.usernameKey}-backup.json`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        return;
+      }
       if (action === "focus-task") { document.getElementById("task-title")?.focus(); document.getElementById("task-title")?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
       if (action === "toggle-task") {
         const task = state.tasks.find(item => item.id === id);
@@ -343,7 +625,41 @@
       if (action === "delete-habit") state.habits = state.habits.filter(habit => habit.id !== id);
       saveState(); render();
     });
-    document.addEventListener("submit", event => {
+    document.addEventListener("submit", async event => {
+      if (event.target.id === "signup-form") {
+        event.preventDefault();
+        try { await registerAccount(event.target); }
+        catch (error) { setAuthMessage(error.message || "Could not create this profile."); }
+        return;
+      }
+      if (event.target.id === "login-form") {
+        event.preventDefault();
+        try { await signIn(event.target); }
+        catch (error) { setAuthMessage(error.message || "Could not sign in."); }
+        return;
+      }
+      if (event.target.id === "recover-form") {
+        event.preventDefault();
+        try { await resetPassword(event.target); }
+        catch (error) { setAuthMessage(error.message || "Could not reset this password."); }
+        return;
+      }
+      if (event.target.id === "settings-form") {
+        event.preventDefault();
+        const form = event.target;
+        currentUser.settings.theme = form.elements.theme.value;
+        currentUser.settings.taskReminders = form.elements.taskReminders.checked;
+        currentUser.settings.reminderTime = form.elements.reminderTime.value || "18:00";
+        currentUser.settings.quoteNotifications = form.elements.quoteNotifications.checked;
+        currentUser.settings.quoteEveryHours = Number(form.elements.quoteEveryHours.value);
+        const notificationChecked = form.elements.notificationsEnabled.checked;
+        currentUser.settings.notificationsEnabled = notificationChecked && "Notification" in window && Notification.permission === "granted";
+        saveCurrentUser();
+        applyTheme(currentUser.settings.theme);
+        render();
+        showToast(notificationChecked && !currentUser.settings.notificationsEnabled ? "Request browser permission to enable system alerts." : "Settings saved.");
+        return;
+      }
       if (event.target.id === "task-form") {
         event.preventDefault();
         const input = event.target.elements.title;
