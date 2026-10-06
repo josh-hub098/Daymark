@@ -25,6 +25,7 @@ The offline cache is saved after the first online visit. Each browser/device kee
 
 ## Features
 
+- New profiles start with empty task and habit lists.
 - Add, complete, and delete tasks
 - Add, check in to, and delete daily habits
 - Track consecutive habit streaks

@@ -263,20 +263,7 @@
     const DEFAULT_SETTINGS = { theme: "light", notificationsEnabled: false, taskReminders: true, quoteNotifications: true, quoteEveryHours: 6, reminderTime: "18:00", lastQuoteAt: Date.now(), lastReminderDate: "" };
     const QUOTES = ["Small steps still move you forward.", "You don't have to finish everything today; just keep your promise to begin.", "Consistency is built one ordinary day at a time.", "Progress counts, even when it is quiet.", "Make the next choice a kind one."];
     const today = localDate(new Date());
-    const starterData = {
-      tasks: [
-        { id: "t1", title: "Plan the week ahead", category: "Planning", done: false },
-        { id: "t2", title: "Send the project update", category: "Work", done: false },
-        { id: "t3", title: "Pick up a few groceries", category: "Personal", done: true },
-        { id: "t4", title: "Read for twenty minutes", category: "Personal", done: false }
-      ],
-      habits: [
-        { id: "h1", name: "Morning pages", symbol: "✎", tint: "#f8e4d6", history: [offsetDate(-4), offsetDate(-3), offsetDate(-2), offsetDate(-1), today] },
-        { id: "h2", name: "Move my body", symbol: "↗", tint: "#dceaf0", history: [offsetDate(-3), offsetDate(-2), today] },
-        { id: "h3", name: "Drink 8 glasses of water", symbol: "◌", tint: "#e7ebc9", history: [offsetDate(-1)] },
-        { id: "h4", name: "Read before bed", symbol: "⌑", tint: "#eee2ee", history: [offsetDate(-5), offsetDate(-4), offsetDate(-3), offsetDate(-2)] }
-      ]
-    };
+    const starterData = { tasks: [], habits: [] };
     let users = loadUsers();
     let currentUser = null;
     let state = structuredClone(starterData);
