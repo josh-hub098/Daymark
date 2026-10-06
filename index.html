@@ -161,6 +161,10 @@
     .auth-fields { display: grid; gap: 13px; }
     .auth-field, .setting-field { display: grid; gap: 6px; color: var(--ink-soft); font-size: 11px; font-weight: 700; }
     .auth-field .field, .setting-field .field { font-weight: 400; }
+    .password-control { position: relative; display: flex; align-items: center; }
+    .password-control .field { padding-right: 58px; }
+    .password-visibility { position: absolute; right: 8px; padding: 5px 4px; border: 0; background: transparent; color: var(--ink-soft); cursor: pointer; font-size: 10px; font-weight: 700; }
+    .password-visibility:focus-visible { outline: 2px solid #809c81; outline-offset: 1px; border-radius: 3px; }
     .auth-submit { width: 100%; margin-top: 17px; }
     .auth-switch { margin: 17px 0 0; color: var(--ink-soft); font-size: 11px; text-align: center; }
     .auth-message { margin: 12px 0 0; padding: 10px 12px; border-radius: 6px; background: #f8e6df; color: #843c2e; font-size: 11px; line-height: 1.45; }
@@ -412,17 +416,22 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => toast.remove(), 2200);
     }
+    function passwordField(label, name, autocomplete, minLength = 8) {
+      const lengthAttribute = minLength ? `minlength="${minLength}"` : "";
+      const accessibleName = label.toLowerCase();
+      return `<label class="auth-field">${label}<span class="password-control"><input class="field" name="${name}" aria-label="${label}" type="password" autocomplete="${autocomplete}" ${lengthAttribute} required><button class="password-visibility" type="button" data-password-toggle data-label="${accessibleName}" aria-label="Show ${accessibleName}" aria-pressed="false">Show</button></span></label>`;
+    }
     function renderAuth() {
       const root = document.getElementById("auth-root");
       const existingProfiles = Object.keys(users).length > 0;
       const forms = {
-        register: `<h2>Create your profile</h2><p class="auth-subtitle">Your profile and tracker data stay in this browser on this device.</p><form id="signup-form" class="auth-fields"><label class="auth-field">Full name<input class="field" name="fullName" autocomplete="name" maxlength="80" required></label><label class="auth-field">Username<input class="field" name="username" autocomplete="username" minlength="3" maxlength="24" required></label><label class="auth-field">Phone number<input class="field" name="phone" type="tel" autocomplete="tel" required></label><label class="auth-field">Password<input class="field" name="password" type="password" autocomplete="new-password" minlength="8" required></label><label class="auth-field">Confirm password<input class="field" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label><button class="primary-button auth-submit">Create profile</button></form><p class="auth-switch">Already have a profile here? <button class="text-button" data-auth-mode="login">Sign in</button></p>`,
-        login: `<h2>Welcome back</h2><p class="auth-subtitle">Sign in to your local Daymark profile.</p><form id="login-form" class="auth-fields"><label class="auth-field">Username<input class="field" name="username" autocomplete="username" required></label><label class="auth-field">Password<input class="field" name="password" type="password" autocomplete="current-password" required></label><button class="primary-button auth-submit">Sign in</button></form><p class="auth-switch"><button class="text-button" data-auth-mode="recover">Forgot password?</button></p><p class="auth-switch">New to Daymark on this device? <button class="text-button" data-auth-mode="register">Create a profile</button></p>`,
-        recover: `<h2>Reset your password</h2><p class="auth-subtitle">Enter your username and the phone number saved with the profile, then choose a new password.</p><form id="recover-form" class="auth-fields"><label class="auth-field">Username<input class="field" name="username" autocomplete="username" required></label><label class="auth-field">Phone number<input class="field" name="phone" type="tel" autocomplete="tel" required></label><label class="auth-field">New password<input class="field" name="password" type="password" autocomplete="new-password" minlength="8" required></label><label class="auth-field">Confirm new password<input class="field" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label><button class="primary-button auth-submit">Reset password</button></form><p class="notice-copy">Offline reset checks the saved phone number on this device. It does not send an SMS or prove identity.</p><p class="auth-switch"><button class="text-button" data-auth-mode="login">Back to sign in</button></p>`
+        register: `<h2>Create your profile</h2><p class="auth-subtitle">Your profile and tracker data stay in this browser on this device.</p><form id="signup-form" class="auth-fields"><label class="auth-field">Full name<input class="field" name="fullName" autocomplete="name" maxlength="80" required></label><label class="auth-field">Username<input class="field" name="username" autocomplete="username" minlength="3" maxlength="24" required></label><label class="auth-field">Phone number<input class="field" name="phone" type="tel" autocomplete="tel" required></label>${passwordField("Password", "password", "new-password")}${passwordField("Confirm password", "confirmPassword", "new-password")}<button class="primary-button auth-submit">Create profile</button></form><p class="auth-switch">Already have a profile here? <button class="text-button" data-auth-mode="login">Sign in</button></p>`,
+        login: `<h2>Welcome back</h2><p class="auth-subtitle">Sign in to your local Daymark profile.</p><form id="login-form" class="auth-fields"><label class="auth-field">Username<input class="field" name="username" autocomplete="username" required></label>${passwordField("Password", "password", "current-password", 0)}<button class="primary-button auth-submit">Sign in</button></form><p class="auth-switch"><button class="text-button" data-auth-mode="recover">Forgot password?</button></p><p class="auth-switch">New to Daymark on this device? <button class="text-button" data-auth-mode="register">Create a profile</button></p>`,
+        recover: `<h2>Reset your password</h2><p class="auth-subtitle">Enter your username and the phone number saved with the profile, then choose a new password.</p><form id="recover-form" class="auth-fields"><label class="auth-field">Username<input class="field" name="username" autocomplete="username" required></label><label class="auth-field">Phone number<input class="field" name="phone" type="tel" autocomplete="tel" required></label>${passwordField("New password", "password", "new-password")}${passwordField("Confirm new password", "confirmPassword", "new-password")}<button class="primary-button auth-submit">Reset password</button></form><p class="notice-copy">Offline reset checks the saved phone number on this device. It does not send an SMS or prove identity.</p><p class="auth-switch"><button class="text-button" data-auth-mode="login">Back to sign in</button></p>`
       };
       if (!existingProfiles && authMode === "login") authMode = "register";
       if (authMode === "register" && existingProfiles && Object.keys(users).length > 0) {
-        forms.register = `<h2>Create another profile</h2><p class="auth-subtitle">Each profile has separate tasks and habits on this device.</p><form id="signup-form" class="auth-fields"><label class="auth-field">Full name<input class="field" name="fullName" autocomplete="name" maxlength="80" required></label><label class="auth-field">Username<input class="field" name="username" autocomplete="username" minlength="3" maxlength="24" required></label><label class="auth-field">Phone number<input class="field" name="phone" type="tel" autocomplete="tel" required></label><label class="auth-field">Password<input class="field" name="password" type="password" autocomplete="new-password" minlength="8" required></label><label class="auth-field">Confirm password<input class="field" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label><button class="primary-button auth-submit">Create profile</button></form><p class="auth-switch"><button class="text-button" data-auth-mode="login">Back to sign in</button></p>`;
+        forms.register = `<h2>Create another profile</h2><p class="auth-subtitle">Each profile has separate tasks and habits on this device.</p><form id="signup-form" class="auth-fields"><label class="auth-field">Full name<input class="field" name="fullName" autocomplete="name" maxlength="80" required></label><label class="auth-field">Username<input class="field" name="username" autocomplete="username" minlength="3" maxlength="24" required></label><label class="auth-field">Phone number<input class="field" name="phone" type="tel" autocomplete="tel" required></label>${passwordField("Password", "password", "new-password")}${passwordField("Confirm password", "confirmPassword", "new-password")}<button class="primary-button auth-submit">Create profile</button></form><p class="auth-switch"><button class="text-button" data-auth-mode="login">Back to sign in</button></p>`;
       }
       root.hidden = false;
       document.getElementById("app-shell").hidden = true;
@@ -575,6 +584,16 @@
       saveState(); render(); showToast("A new habit is ready when you are.");
     }
     document.addEventListener("click", async event => {
+      const passwordToggle = event.target.closest("[data-password-toggle]");
+      if (passwordToggle) {
+        const input = passwordToggle.parentElement.querySelector("input");
+        const visible = input.type === "password";
+        input.type = visible ? "text" : "password";
+        passwordToggle.textContent = visible ? "Hide" : "Show";
+        passwordToggle.setAttribute("aria-pressed", String(visible));
+        passwordToggle.setAttribute("aria-label", `${visible ? "Hide" : "Show"} ${passwordToggle.dataset.label}`);
+        return;
+      }
       const authModeButton = event.target.closest("[data-auth-mode]");
       if (authModeButton) { authMode = authModeButton.dataset.authMode; authMessage = ""; renderAuth(); return; }
       const viewButton = event.target.closest("[data-view]");
