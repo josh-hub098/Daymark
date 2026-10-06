@@ -13,6 +13,7 @@ To install Daymark as an app and use it offline, publish all project files toget
 - On desktop Chrome or Edge, choose **Install** from the browser menu or address bar.
 - On Android, open the address in Chrome and choose **Install app** or **Add to Home screen**.
 - On iPhone, open the address in Safari, tap **Share**, then **Add to Home Screen**.
+- On the sign-in or sign-up screen, choose **Install Daymark** for a browser install prompt or device-specific instructions.
 
 The offline cache is saved after the first online visit. Each browser/device keeps its own profile and data; there is no cloud account or sync. Opening `index.html` directly still works, but browser installation and offline caching require HTTPS (or localhost).
 
@@ -20,6 +21,7 @@ The offline cache is saved after the first online visit. Each browser/device kee
 
 - Passwords are stored as salted PBKDF2 hashes. This local sign-in is a convenience gate, not server-backed authentication or encrypted storage; use a password unique to this app.
 - Only one profile can be created in a browser on a device. This local limit cannot prevent a person from creating another profile in a different browser or device; global uniqueness requires a server-backed account system.
+- On the next sign-in, the old demo tasks and habits are removed; user-created entries remain saved.
 - Password reset compares the username and phone number saved on this device. It does not send an SMS or independently verify identity.
 - Task reminders and quote notifications can appear while Daymark is open. Allow browser notifications in Settings for system alerts. A fully closed offline app cannot send scheduled notifications; that requires a push service.
 

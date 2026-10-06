@@ -171,6 +171,13 @@
     .primary-button:focus-visible, .text-button:focus-visible, .nav-item:focus-visible, .profile-button:focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; }
     .auth-message { margin: 12px 0 0; padding: 10px 12px; border-radius: 6px; background: #f8e6df; color: #843c2e; font-size: 11px; line-height: 1.45; }
     :root[data-theme="dark"] .auth-message { background: #4b302a; color: #ffd2c4; }
+    .install-area { margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--line); text-align: center; }
+    .install-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); cursor: pointer; font-size: 11px; font-weight: 700; }
+    .install-button:hover { border-color: var(--ink-soft); }
+    .install-guide { margin-top: 12px; padding: 12px 14px; border-radius: 6px; background: var(--paper); color: var(--ink-soft); text-align: left; font-size: 11px; line-height: 1.55; }
+    .install-guide p { margin: 0 0 5px; }
+    .install-guide p:last-child { margin-bottom: 0; }
+    .install-guide[hidden] { display: none !important; }
     .topbar-actions { display: flex; align-items: center; gap: 16px; }
     .profile-button { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 50%; background: var(--lime); color: #203c33; cursor: pointer; font: 700 13px Georgia, serif; }
     .profile-button:hover { outline: 3px solid rgba(217,237,130,.28); }
@@ -267,6 +274,8 @@
     const SESSION_DATA_PREFIX = "daymark-profile-data-v1:";
     const DEFAULT_SETTINGS = { theme: "light", notificationsEnabled: false, taskReminders: true, quoteNotifications: true, quoteEveryHours: 6, reminderTime: "18:00", lastQuoteAt: Date.now(), lastReminderDate: "" };
     const QUOTES = ["Small steps still move you forward.", "You don't have to finish everything today; just keep your promise to begin.", "Consistency is built one ordinary day at a time.", "Progress counts, even when it is quiet.", "Make the next choice a kind one."];
+    const DEMO_TASK_IDS = new Set(["t1", "t2", "t3", "t4"]);
+    const DEMO_HABIT_IDS = new Set(["h1", "h2", "h3", "h4"]);
     const today = localDate(new Date());
     const starterData = { tasks: [], habits: [] };
     let users = loadUsers();
@@ -277,6 +286,7 @@
     let currentView = "today";
     let toastTimer;
     let reminderTimer;
+    let deferredInstallPrompt = null;
 
     function localDate(date) {
       const year = date.getFullYear();
@@ -304,6 +314,11 @@
       } catch (error) { console.warn("Could not read saved Daymark data.", error); }
       return structuredClone(starterData);
     }
+    function removeDemoItems(data) {
+      const tasks = data.tasks.filter(task => !DEMO_TASK_IDS.has(task.id));
+      const habits = data.habits.filter(habit => !DEMO_HABIT_IDS.has(habit.id));
+      return { data: { ...data, tasks, habits }, changed: tasks.length !== data.tasks.length || habits.length !== data.habits.length };
+    }
     function saveState() {
       if (currentUser) localStorage.setItem(profileDataKey(currentUser.usernameKey), JSON.stringify(state));
     }
@@ -328,8 +343,11 @@
       currentUser.settings = { ...DEFAULT_SETTINGS, ...currentUser.settings };
       users[currentUser.usernameKey] = currentUser;
       saveCurrentUser();
-      state = loadState(profileDataKey(currentUser.usernameKey));
-      if (!localStorage.getItem(profileDataKey(currentUser.usernameKey))) saveState();
+      const storageKey = profileDataKey(currentUser.usernameKey);
+      const hasSavedState = Boolean(localStorage.getItem(storageKey));
+      const cleanedState = removeDemoItems(loadState(storageKey));
+      state = cleanedState.data;
+      if (!hasSavedState || cleanedState.changed) saveState();
       currentView = "today";
       authMessage = "";
       applyTheme(currentUser.settings.theme);
@@ -437,7 +455,7 @@
       }
       root.hidden = false;
       document.getElementById("app-shell").hidden = true;
-      root.innerHTML = `<main class="auth-page"><div class="auth-card"><section class="auth-brand-panel"><div class="brand"><span class="brand-mark">d.</span><span>daymark</span></div><div class="auth-promise"><p class="eyebrow">A little more intentional</p><h1>Make room for what matters.</h1><p>Tasks, habits, and the small promises you keep to yourself.</p></div><p class="auth-footnote">This profile lives on this device. It doesn't sync to an account online.</p></section><section class="auth-form-panel"><p class="eyebrow">Your space</p>${forms[authMode] || forms.login}<p class="auth-message" id="auth-message" ${authMessage ? "" : "hidden"}>${escapeHtml(authMessage)}</p></section></div></main>`;
+      root.innerHTML = `<main class="auth-page"><div class="auth-card"><section class="auth-brand-panel"><div class="brand"><span class="brand-mark">d.</span><span>daymark</span></div><div class="auth-promise"><p class="eyebrow">A little more intentional</p><h1>Make room for what matters.</h1><p>Tasks, habits, and the small promises you keep to yourself.</p></div><p class="auth-footnote">This profile lives on this device. It doesn't sync to an account online.</p></section><section class="auth-form-panel"><p class="eyebrow">Your space</p>${forms[authMode] || forms.login}<p class="auth-message" id="auth-message" ${authMessage ? "" : "hidden"}>${escapeHtml(authMessage)}</p><div class="install-area"><button class="install-button" type="button" data-action="install-app"><span aria-hidden="true">↓</span> Install Daymark</button><div class="install-guide" id="install-guide" hidden><p><strong>iPhone:</strong> Open in Safari, tap Share, then Add to Home Screen.</p><p><strong>Android:</strong> In Chrome, open the menu and choose Install app or Add to Home screen.</p><p><strong>PC:</strong> In Chrome or Edge, choose Install from the address bar or browser menu.</p><p>Open Daymark online once before using it offline.</p></div></div></section></div></main>`;
     }
     function settingsPanel() {
       const settings = currentUser.settings;
@@ -603,6 +621,19 @@
       const actionButton = event.target.closest("[data-action]");
       if (!actionButton) return;
       const { action, id } = actionButton.dataset;
+      if (action === "install-app") {
+        if (deferredInstallPrompt) {
+          const installPrompt = deferredInstallPrompt;
+          deferredInstallPrompt = null;
+          await installPrompt.prompt();
+          const choice = await installPrompt.userChoice;
+          if (choice.outcome === "accepted") showToast("Daymark was added to this device.");
+        } else {
+          const guide = document.getElementById("install-guide");
+          if (guide) guide.hidden = !guide.hidden;
+        }
+        return;
+      }
       if (action === "request-notifications") {
         if (!("Notification" in window)) { showToast("This browser does not support system notifications."); return; }
         try {
@@ -692,6 +723,11 @@
         if (input.value.trim()) addHabit(input.value);
       }
     });
+    window.addEventListener("beforeinstallprompt", event => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+    });
+    window.addEventListener("appinstalled", () => { deferredInstallPrompt = null; });
     render();
     if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
       window.addEventListener("load", () => {
