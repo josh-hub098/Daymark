@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#203c33">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="apple-touch-icon" href="./icon.svg">
+  <title>Daymark | To-Do + Habit Tracker</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #203c33;
+      --ink-soft: #527067;
+      --paper: #f3f4ee;
+      --surface: #fffefa;
+      --line: #e5e8df;
+      --lime: #d9ed82;
+      --coral: #ef8c70;
+      --blue: #a8c8dc;
+      --muted: #8d9b92;
+      --shadow: 0 16px 38px rgba(32, 60, 51, .07);
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      font-synthesis: none;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; background: var(--paper); color: var(--ink); }
+    button, input, select { font: inherit; }
+    button { color: inherit; }
+    .app-shell { min-height: 100vh; display: grid; grid-template-columns: 248px minmax(0, 1fr); }
+    .sidebar { background: var(--ink); color: #f5f6ef; padding: 28px 18px 22px; display: flex; flex-direction: column; min-height: 100vh; }
+    .brand { display: flex; align-items: center; gap: 11px; padding: 0 12px; font-family: Georgia, serif; font-size: 23px; letter-spacing: 0; }
+    .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; background: var(--lime); color: var(--ink); border-radius: 11px 11px 11px 3px; font: bold 19px Georgia, serif; }
+    .workspace-label { margin: 44px 12px 11px; color: #9bb0a4; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+    .nav-list { display: grid; gap: 5px; }
+    .nav-item { display: flex; align-items: center; gap: 13px; width: 100%; min-height: 45px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: #bdc9c1; text-align: left; cursor: pointer; font-size: 13px; transition: background .18s ease, color .18s ease; }
+    .nav-item:hover { color: #fff; background: rgba(255,255,255,.08); }
+    .nav-item[aria-current="page"] { color: var(--ink); background: var(--lime); font-weight: 700; }
+    .nav-glyph { width: 19px; text-align: center; font-size: 17px; }
+    .sidebar-bottom { margin-top: auto; padding: 18px 12px 4px; border-top: 1px solid rgba(255,255,255,.13); color: #b6c5bc; font-size: 12px; line-height: 1.55; }
+    .sidebar-bottom strong { display: block; margin-bottom: 4px; color: #fff; font-family: Georgia, serif; font-size: 16px; font-weight: 400; }
+    .main-area { min-width: 0; padding: 0 clamp(20px, 4vw, 56px) 56px; }
+    .topbar { height: 78px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+    .crumb { color: var(--ink-soft); font-size: 12px; }
+    .today-date { display: flex; align-items: center; gap: 9px; color: var(--ink-soft); font-size: 12px; }
+    .date-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--coral); }
+    .content { max-width: 1280px; margin: 0 auto; padding-top: 36px; }
+    .welcome-row { display: flex; align-items: end; justify-content: space-between; gap: 22px; margin-bottom: 27px; }
+    .eyebrow { margin: 0 0 9px; color: #7c8e82; font-size: 10px; font-weight: 700; letter-spacing: 1.35px; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 8px; font: 400 clamp(30px, 4vw, 43px)/1.1 Georgia, serif; letter-spacing: 0; }
+    .welcome-copy { margin: 0; color: var(--ink-soft); font-size: 13px; }
+    .primary-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 0 16px; border: 0; border-radius: 7px; background: var(--ink); color: #fff; cursor: pointer; font-size: 12px; font-weight: 700; transition: transform .15s ease, background .15s ease; }
+    .primary-button:hover { transform: translateY(-1px); background: #31574a; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; margin-bottom: 23px; }
+    .stat-card { min-height: 115px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+    .stat-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; color: var(--ink-soft); font-size: 11px; }
+    .stat-symbol { display: grid; place-items: center; width: 27px; height: 27px; border-radius: 8px; background: #eff3e4; color: var(--ink); font-size: 14px; }
+    .stat-value { font: 400 26px/1 Georgia, serif; }
+    .stat-value small { color: var(--muted); font: 400 12px "Trebuchet MS", "Segoe UI", sans-serif; }
+    .stat-note { float: right; margin-top: 7px; color: #87968d; font-size: 10px; }
+    .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(280px, .9fr); gap: 17px; align-items: start; }
+    .column-stack { display: grid; gap: 17px; min-width: 0; }
+    .panel { min-width: 0; padding: 21px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+    .panel-heading { display: flex; align-items: start; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+    .panel-heading h2 { margin: 0 0 5px; font: 400 20px/1.15 Georgia, serif; }
+    .panel-heading p { margin: 0; color: var(--muted); font-size: 11px; }
+    .text-button { padding: 4px 0; border: 0; background: transparent; color: #526f63; cursor: pointer; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .text-button:hover { color: #203c33; text-decoration: underline; }
+    .progress-panel { display: flex; align-items: center; gap: 20px; min-height: 178px; background: #e8efcf; border-color: #e0e8c2; }
+    .progress-ring { flex: 0 0 103px; display: grid; place-items: center; width: 103px; aspect-ratio: 1; border-radius: 50%; background: conic-gradient(var(--ink) var(--progress), rgba(32,60,51,.12) 0); position: relative; }
+    .progress-ring::before { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: #e8efcf; }
+    .progress-number { position: relative; font: 400 26px Georgia, serif; }
+    .progress-copy h2 { margin-bottom: 7px; font: 400 20px Georgia, serif; }
+    .progress-copy p { max-width: 260px; margin: 0; color: #607466; font-size: 11px; line-height: 1.5; }
+    .item-list { display: grid; }
+    .task-row, .habit-row { display: grid; grid-template-columns: 22px minmax(0,1fr) auto; align-items: center; gap: 11px; min-height: 57px; border-top: 1px solid #edf0e8; }
+    .task-row:first-child, .habit-row:first-child { border-top: 0; }
+    .check-button { display: grid; place-items: center; width: 20px; height: 20px; padding: 0; border: 1.5px solid #becbc0; border-radius: 6px; background: transparent; cursor: pointer; color: transparent; font-size: 12px; }
+    .check-button:hover { border-color: var(--ink); }
+    .check-button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: white; }
+    .item-title { overflow: hidden; color: var(--ink); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+    .is-complete .item-title { color: #97a29a; text-decoration: line-through; }
+    .item-meta { margin-top: 4px; color: #98a39b; font-size: 10px; }
+    .task-tag { padding: 5px 8px; border-radius: 4px; background: #f2f4ed; color: #77867d; font-size: 9px; white-space: nowrap; }
+    .habit-main { display: flex; min-width: 0; align-items: center; gap: 10px; }
+    .habit-mark { flex: 0 0 31px; display: grid; place-items: center; width: 31px; height: 31px; border-radius: 9px; background: var(--habit-tint, #e8efcf); color: var(--ink); font-size: 15px; }
+    .streak { display: flex; align-items: center; gap: 4px; color: #73857a; font-size: 10px; white-space: nowrap; }
+    .empty-state { padding: 24px 10px; color: var(--muted); text-align: center; font-size: 12px; }
+    .quick-form { display: flex; gap: 8px; margin-top: 14px; }
+    .field { width: 100%; min-width: 0; min-height: 40px; padding: 0 11px; border: 1px solid var(--line); border-radius: 6px; outline: 0; background: #fff; color: var(--ink); font-size: 12px; }
+    .field:focus { border-color: #809c81; box-shadow: 0 0 0 3px rgba(128,156,129,.15); }
+    .add-button { flex: 0 0 40px; width: 40px; height: 40px; border: 0; border-radius: 6px; background: var(--lime); cursor: pointer; font-size: 20px; }
+    .week-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; margin: 17px 0 10px; }
+    .day-cell { display: grid; justify-items: center; gap: 8px; color: #849188; font-size: 9px; }
+    .day-track { display: flex; align-items: end; width: 100%; height: 61px; padding: 5px; border-radius: 5px; background: #f1f3ec; }
+    .day-fill { width: 100%; min-height: 4px; border-radius: 3px; background: var(--blue); }
+    .day-cell.today .day-track { outline: 1px solid #afc36e; background: #f6f8ec; }
+    .day-cell.today { color: var(--ink); font-weight: 700; }
+    .habit-form { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; margin-bottom: 10px; }
+    .view-intro { margin-bottom: 22px; }
+    .view-intro h1 { margin-bottom: 9px; }
+    .view-intro p { margin: 0; color: var(--ink-soft); font-size: 13px; }
+    .wide-panel { margin-top: 18px; }
+    .insight-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+    .insight-tile { padding: 17px; border-radius: 7px; background: #f4f5ef; }
+    .insight-tile span { display: block; margin-bottom: 10px; color: #7e8c82; font-size: 10px; }
+    .insight-tile strong { font: 400 26px Georgia, serif; }
+    .delete-button { border: 0; background: transparent; color: #a3ada5; cursor: pointer; font-size: 17px; line-height: 1; }
+    .delete-button:hover { color: #b54d3e; }
+    .toast { position: fixed; right: 22px; bottom: 22px; z-index: 5; padding: 12px 16px; border-radius: 6px; background: var(--ink); color: #fff; box-shadow: var(--shadow); font-size: 12px; animation: rise .2s ease-out; }
+    @keyframes rise { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 940px) {
+      .app-shell { grid-template-columns: 205px minmax(0,1fr); }
+      .main-area { padding-inline: 24px; }
+      .dashboard-grid { grid-template-columns: minmax(0,1.25fr) minmax(250px,.85fr); gap: 12px; }
+      .panel { padding: 17px; }
+      .progress-panel { gap: 13px; }
+      .progress-ring { flex-basis: 84px; width: 84px; }
+    }
+    @media (max-width: 720px) {
+      .app-shell { display: block; padding-bottom: 69px; }
+      .sidebar { position: fixed; z-index: 4; inset: auto 0 0; min-height: 0; height: 64px; padding: 6px 10px; border-top: 1px solid rgba(255,255,255,.14); }
+      .brand, .workspace-label, .sidebar-bottom { display: none; }
+      .nav-list { height: 100%; grid-template-columns: repeat(4,1fr); gap: 4px; }
+      .nav-item { min-height: 50px; padding: 4px 2px; flex-direction: column; justify-content: center; gap: 3px; border-radius: 6px; font-size: 9px; }
+      .nav-glyph { font-size: 16px; }
+      .main-area { padding: 0 17px 28px; }
+      .topbar { height: 62px; }
+      .content { padding-top: 27px; }
+      .welcome-row { align-items: start; flex-direction: column; gap: 15px; }
+      .welcome-row .primary-button { align-self: stretch; }
+      .stats-grid { gap: 7px; }
+      .stat-card { min-height: 98px; padding: 12px 10px; }
+      .stat-top { align-items: start; margin-bottom: 11px; font-size: 9px; }
+      .stat-symbol { display: none; }
+      .stat-value { font-size: 22px; }
+      .stat-note { display: none; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .column-stack { gap: 12px; }
+      .progress-panel { min-height: 148px; }
+      .progress-ring { flex-basis: 90px; width: 90px; }
+      .panel { padding: 17px; }
+      .view-intro { margin-bottom: 17px; }
+      .habit-form { grid-template-columns: minmax(0,1fr) 42px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand"><span class="brand-mark">d.</span><span>daymark</span></div>
+      <div class="workspace-label">Your space</div>
+      <nav class="nav-list">
+        <button class="nav-item" data-view="today" aria-current="page"><span class="nav-glyph">◷</span><span>Today</span></button>
+        <button class="nav-item" data-view="tasks"><span class="nav-glyph">☷</span><span>Tasks</span></button>
+        <button class="nav-item" data-view="habits"><span class="nav-glyph">✳</span><span>Habits</span></button>
+        <button class="nav-item" data-view="insights"><span class="nav-glyph">↗</span><span>Insights</span></button>
+      </nav>
+      <div class="sidebar-bottom"><strong>Small steps count.</strong>Keep showing up for the things you care about.</div>
+    </aside>
+    <div class="main-area">
+      <header class="topbar"><div class="crumb" id="breadcrumb">Your space / Today</div><div class="today-date"><span class="date-dot"></span><span id="date-label"></span></div></header>
+      <main class="content" id="content" aria-live="polite"></main>
+    </div>
+  </div>
+  <script>
+    const STORE_KEY = "daymark-v1";
+    const today = localDate(new Date());
+    const starterData = {
+      tasks: [
+        { id: "t1", title: "Plan the week ahead", category: "Planning", done: false },
+        { id: "t2", title: "Send the project update", category: "Work", done: false },
+        { id: "t3", title: "Pick up a few groceries", category: "Personal", done: true },
+        { id: "t4", title: "Read for twenty minutes", category: "Personal", done: false }
+      ],
+      habits: [
+        { id: "h1", name: "Morning pages", symbol: "✎", tint: "#f8e4d6", history: [offsetDate(-4), offsetDate(-3), offsetDate(-2), offsetDate(-1), today] },
+        { id: "h2", name: "Move my body", symbol: "↗", tint: "#dceaf0", history: [offsetDate(-3), offsetDate(-2), today] },
+        { id: "h3", name: "Drink 8 glasses of water", symbol: "◌", tint: "#e7ebc9", history: [offsetDate(-1)] },
+        { id: "h4", name: "Read before bed", symbol: "⌑", tint: "#eee2ee", history: [offsetDate(-5), offsetDate(-4), offsetDate(-3), offsetDate(-2)] }
+      ]
+    };
+    let state = loadState();
+    let currentView = "today";
+    let toastTimer;
+
+    function localDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+    function offsetDate(days) {
+      const date = new Date();
+      date.setDate(date.getDate() + days);
+      return localDate(date);
+    }
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORE_KEY));
+        if (saved && Array.isArray(saved.tasks) && Array.isArray(saved.habits)) return saved;
+      } catch (error) { console.warn("Could not read saved Daymark data.", error); }
+      return structuredClone(starterData);
+    }
+    function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
+    }
+    function habitDone(habit) { return habit.history.includes(today); }
+    function currentStreak(habit) {
+      const completed = new Set(habit.history);
+      let cursor = completed.has(today) ? new Date(`${today}T12:00:00`) : new Date(`${offsetDate(-1)}T12:00:00`);
+      let count = 0;
+      while (completed.has(localDate(cursor))) { count += 1; cursor.setDate(cursor.getDate() - 1); }
+      return count;
+    }
+    function completion() {
+      const total = state.tasks.length + state.habits.length;
+      const done = state.tasks.filter(task => task.done).length + state.habits.filter(habitDone).length;
+      return total ? Math.round(done / total * 100) : 0;
+    }
+    function showToast(message) {
+      document.querySelector(".toast")?.remove();
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.setAttribute("role", "status");
+      toast.textContent = message;
+      document.body.append(toast);
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.remove(), 2200);
+    }
+    function taskRows(list, deletable = false) {
+      if (!list.length) return '<div class="empty-state">Nothing on your list yet. Add a task to get started.</div>';
+      return list.map(task => `<div class="task-row ${task.done ? "is-complete" : ""}">
+        <button class="check-button" data-action="toggle-task" data-id="${escapeHtml(task.id)}" aria-label="${task.done ? "Mark incomplete" : "Complete"}: ${escapeHtml(task.title)}" aria-pressed="${task.done}">✓</button>
+        <div><div class="item-title">${escapeHtml(task.title)}</div><div class="item-meta">${task.done ? "Completed today" : "Due today"}</div></div>
+        ${deletable ? `<button class="delete-button" data-action="delete-task" data-id="${escapeHtml(task.id)}" aria-label="Delete ${escapeHtml(task.title)}" title="Delete task">×</button>` : `<span class="task-tag">${escapeHtml(task.category)}</span>`}
+      </div>`).join("");
+    }
+    function habitRows(list, deletable = false) {
+      if (!list.length) return '<div class="empty-state">No habits yet. Add one small thing you want to repeat.</div>';
+      return list.map(habit => {
+        const done = habitDone(habit);
+        return `<div class="habit-row ${done ? "is-complete" : ""}">
+          <button class="check-button" data-action="toggle-habit" data-id="${escapeHtml(habit.id)}" aria-label="${done ? "Undo" : "Complete"} ${escapeHtml(habit.name)}" aria-pressed="${done}">✓</button>
+          <div class="habit-main"><span class="habit-mark" style="--habit-tint:${escapeHtml(habit.tint)}">${escapeHtml(habit.symbol)}</span><div><div class="item-title">${escapeHtml(habit.name)}</div><div class="item-meta">${done ? "Done for today" : "Daily habit"}</div></div></div>
+          ${deletable ? `<button class="delete-button" data-action="delete-habit" data-id="${escapeHtml(habit.id)}" aria-label="Delete ${escapeHtml(habit.name)}" title="Delete habit">×</button>` : `<span class="streak"><span aria-hidden="true">✦</span>${currentStreak(habit)} day${currentStreak(habit) === 1 ? "" : "s"}</span>`}
+        </div>`;
+      }).join("");
+    }
+    function progressPanel() {
+      const percent = completion();
+      const completeCount = state.tasks.filter(task => task.done).length + state.habits.filter(habitDone).length;
+      const total = state.tasks.length + state.habits.length;
+      const message = percent === 100 ? "Everything you planned is done. Take a moment to enjoy it." : "A little progress is still progress. Keep your pace gentle.";
+      return `<section class="panel progress-panel"><div class="progress-ring" style="--progress:${percent}%"><span class="progress-number">${percent}%</span></div><div class="progress-copy"><p class="eyebrow">Today's progress</p><h2>${completeCount} of ${total} complete</h2><p>${message}</p></div></section>`;
+    }
+    function weekBars() {
+      const days = Array.from({ length: 7 }, (_, index) => {
+        const date = new Date();
+        date.setDate(date.getDate() - (6 - index));
+        const iso = localDate(date);
+        const completed = state.habits.reduce((sum, habit) => sum + (habit.history.includes(iso) ? 1 : 0), 0);
+        const percent = state.habits.length ? Math.round(completed / state.habits.length * 100) : 0;
+        return `<div class="day-cell ${iso === today ? "today" : ""}"><div class="day-track"><span class="day-fill" style="height:${Math.max(7, percent)}%"></span></div><span>${date.toLocaleDateString(undefined, { weekday: "short" })}</span></div>`;
+      });
+      return days.join("");
+    }
+    function renderToday() {
+      const openTasks = state.tasks.filter(task => !task.done);
+      const activeHabits = state.habits;
+      return `<section class="welcome-row"><div><p class="eyebrow">A fresh page, every day</p><h1>Make room for what matters.</h1><p class="welcome-copy">Build a day that feels like yours, one small step at a time.</p></div><button class="primary-button" data-action="focus-task">＋ <span>Add a task</span></button></section>
+        <section class="stats-grid" aria-label="Today's summary">
+          <article class="stat-card"><div class="stat-top"><span>Tasks finished</span><span class="stat-symbol">✓</span></div><div class="stat-value">${state.tasks.filter(task => task.done).length}<small> / ${state.tasks.length}</small></div><span class="stat-note">for today</span></article>
+          <article class="stat-card"><div class="stat-top"><span>Habits checked in</span><span class="stat-symbol">✳</span></div><div class="stat-value">${state.habits.filter(habitDone).length}<small> / ${state.habits.length}</small></div><span class="stat-note">today</span></article>
+          <article class="stat-card"><div class="stat-top"><span>Best active streak</span><span class="stat-symbol">✦</span></div><div class="stat-value">${Math.max(0, ...state.habits.map(currentStreak))}<small> days</small></div><span class="stat-note">keep it going</span></article>
+        </section>
+        <section class="dashboard-grid">
+          <div class="column-stack">
+            ${progressPanel()}
+            <section class="panel"><div class="panel-heading"><div><h2>Today's tasks</h2><p>${openTasks.length ? `${openTasks.length} still on your list` : "You're all caught up"}</p></div><button class="text-button" data-view="tasks">All tasks →</button></div><div class="item-list">${taskRows(state.tasks.slice(0, 4))}</div><form class="quick-form" id="task-form"><input class="field" id="task-title" name="title" aria-label="Task title" maxlength="80" placeholder="Add a task for today…" autocomplete="off" required><button class="add-button" aria-label="Add task">＋</button></form></section>
+          </div>
+          <div class="column-stack">
+            <section class="panel"><div class="panel-heading"><div><h2>Daily habits</h2><p>Show up, then let the streak grow</p></div><button class="text-button" data-view="habits">All habits →</button></div><div class="item-list">${habitRows(activeHabits.slice(0, 4))}</div></section>
+            <section class="panel"><div class="panel-heading"><div><h2>Your rhythm</h2><p>Habit check-ins this week</p></div></div><div class="week-strip">${weekBars()}</div></section>
+          </div>
+        </section>`;
+    }
+    function renderTasks() {
+      return `<section class="view-intro"><p class="eyebrow">Clear the path</p><h1>Your tasks</h1><p>Keep today's priorities in one calm, manageable place.</p></section>
+        <section class="panel"><div class="panel-heading"><div><h2>Task list</h2><p>${state.tasks.filter(task => !task.done).length} remaining · ${state.tasks.filter(task => task.done).length} complete</p></div></div><div class="item-list">${taskRows(state.tasks, true)}</div><form class="quick-form" id="task-form"><input class="field" name="title" aria-label="Task title" maxlength="80" placeholder="What needs doing?" autocomplete="off" required><button class="add-button" aria-label="Add task">＋</button></form></section>`;
+    }
+    function renderHabits() {
+      return `<section class="view-intro"><p class="eyebrow">Consistency over intensity</p><h1>Your habits</h1><p>Small rituals make a life. Check in when you complete one today.</p></section>
+        <section class="panel"><div class="panel-heading"><div><h2>Daily check-ins</h2><p>${state.habits.filter(habitDone).length} of ${state.habits.length} completed today</p></div></div><div class="item-list">${habitRows(state.habits, true)}</div><form class="quick-form" id="habit-form"><input class="field" name="name" aria-label="Habit name" maxlength="48" placeholder="Add a daily habit…" autocomplete="off" required><button class="add-button" aria-label="Add habit">＋</button></form></section>
+        <section class="panel wide-panel"><div class="panel-heading"><div><h2>This week's rhythm</h2><p>Daily habit check-ins across your routine</p></div></div><div class="week-strip">${weekBars()}</div></section>`;
+    }
+    function renderInsights() {
+      const best = Math.max(0, ...state.habits.map(currentStreak));
+      const todayRate = completion();
+      const weekChecks = state.habits.reduce((sum, habit) => sum + habit.history.filter(day => day >= offsetDate(-6) && day <= today).length, 0);
+      return `<section class="view-intro"><p class="eyebrow">Notice the good</p><h1>Your progress</h1><p>A snapshot of the effort you've put in lately.</p></section>
+        <section class="panel"><div class="panel-heading"><div><h2>At a glance</h2><p>Your current momentum</p></div></div><div class="insight-grid"><div class="insight-tile"><span>Today's completion</span><strong>${todayRate}%</strong></div><div class="insight-tile"><span>Best active streak</span><strong>${best} day${best === 1 ? "" : "s"}</strong></div><div class="insight-tile"><span>Habit check-ins this week</span><strong>${weekChecks}</strong></div><div class="insight-tile"><span>Habits in your routine</span><strong>${state.habits.length}</strong></div></div></section>
+        <section class="panel wide-panel"><div class="panel-heading"><div><h2>Weekly habit rhythm</h2><p>Share of habits checked off each day</p></div></div><div class="week-strip">${weekBars()}</div></section>`;
+    }
+    function render() {
+      const date = new Date();
+      document.getElementById("date-label").textContent = date.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+      document.getElementById("breadcrumb").textContent = `Your space / ${currentView[0].toUpperCase()}${currentView.slice(1)}`;
+      document.querySelectorAll(".nav-item").forEach(button => button.setAttribute("aria-current", button.dataset.view === currentView ? "page" : "false"));
+      const views = { today: renderToday, tasks: renderTasks, habits: renderHabits, insights: renderInsights };
+      document.getElementById("content").innerHTML = views[currentView]();
+    }
+    function addTask(title) {
+      state.tasks.unshift({ id: crypto.randomUUID(), title: title.trim(), category: "Personal", done: false });
+      saveState(); render(); showToast("Task added to your day.");
+    }
+    function addHabit(name) {
+      state.habits.push({ id: crypto.randomUUID(), name: name.trim(), symbol: "✳", tint: "#e7ebc9", history: [] });
+      saveState(); render(); showToast("A new habit is ready when you are.");
+    }
+    document.addEventListener("click", event => {
+      const viewButton = event.target.closest("[data-view]");
+      if (viewButton) { currentView = viewButton.dataset.view; render(); return; }
+      const actionButton = event.target.closest("[data-action]");
+      if (!actionButton) return;
+      const { action, id } = actionButton.dataset;
+      if (action === "focus-task") { document.getElementById("task-title")?.focus(); document.getElementById("task-title")?.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+      if (action === "toggle-task") {
+        const task = state.tasks.find(item => item.id === id);
+        if (task) task.done = !task.done;
+      }
+      if (action === "toggle-habit") {
+        const habit = state.habits.find(item => item.id === id);
+        if (habit) habit.history = habitDone(habit) ? habit.history.filter(day => day !== today) : [...habit.history, today];
+      }
+      if (action === "delete-task") state.tasks = state.tasks.filter(task => task.id !== id);
+      if (action === "delete-habit") state.habits = state.habits.filter(habit => habit.id !== id);
+      saveState(); render();
+    });
+    document.addEventListener("submit", event => {
+      if (event.target.id === "task-form") {
+        event.preventDefault();
+        const input = event.target.elements.title;
+        if (input.value.trim()) addTask(input.value);
+      }
+      if (event.target.id === "habit-form") {
+        event.preventDefault();
+        const input = event.target.elements.name;
+        if (input.value.trim()) addHabit(input.value);
+      }
+    });
+    render();
+    if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(error => console.error("Daymark offline support could not start.", error));
+      });
+    }
+  </script>
+</body>
+</html>
