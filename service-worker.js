@@ -1,4 +1,4 @@
-const CACHE_NAME = "daymark-shell-v3";
+const CACHE_NAME = "daymark-shell-v4";
 const SHELL_FILES = [
   "./index.html",
   "./manifest.webmanifest",

@@ -345,6 +345,11 @@
       startReminderChecks();
     }
     async function registerAccount(form) {
+      users = loadUsers();
+      if (Object.keys(users).length > 0) {
+        authMode = "login";
+        throw new Error("Only one profile can be created on this device. Please sign in.");
+      }
       const fullName = form.elements.fullName.value.trim();
       const username = form.elements.username.value.trim();
       const usernameKey = normalizeUsername(username);
@@ -357,9 +362,13 @@
       if (users[usernameKey]) throw new Error("That username already has a profile on this device.");
       const salt = newSalt();
       const passwordHash = await hashPassword(password, salt);
-      const firstProfile = Object.keys(users).length === 0;
+      users = loadUsers();
+      if (Object.keys(users).length > 0) {
+        authMode = "login";
+        throw new Error("Only one profile can be created on this device. Please sign in.");
+      }
       const user = { username, usernameKey, fullName, phone, salt, passwordHash, settings: { ...DEFAULT_SETTINGS } };
-      if (firstProfile && localStorage.getItem(STORE_KEY) && !localStorage.getItem(profileDataKey(usernameKey))) {
+      if (localStorage.getItem(STORE_KEY) && !localStorage.getItem(profileDataKey(usernameKey))) {
         localStorage.setItem(profileDataKey(usernameKey), localStorage.getItem(STORE_KEY));
       }
       users[usernameKey] = user;
@@ -424,14 +433,16 @@
     function renderAuth() {
       const root = document.getElementById("auth-root");
       const existingProfiles = Object.keys(users).length > 0;
+      const createProfileLink = existingProfiles ? "" : `<p class="auth-switch">New to Daymark on this device? <button class="text-button" data-auth-mode="register">Create a profile</button></p>`;
       const forms = {
-        register: `<h2>Create your profile</h2><p class="auth-subtitle">Your profile and tracker data stay in this browser on this device.</p><form id="signup-form" class="auth-fields"><label class="auth-field">Full name<input class="field" name="fullName" autocomplete="name" maxlength="80" required></label><label class="auth-field">Username<input class="field" name="username" autocomplete="username" minlength="3" maxlength="24" required></label><label class="auth-field">Phone number<input class="field" name="phone" type="tel" autocomplete="tel" required></label>${passwordField("Password", "password", "new-password")}${passwordField("Confirm password", "confirmPassword", "new-password")}<button class="primary-button auth-submit">Create profile</button></form><p class="auth-switch">Already have a profile here? <button class="text-button" data-auth-mode="login">Sign in</button></p>`,
-        login: `<h2>Welcome back</h2><p class="auth-subtitle">Sign in to your local Daymark profile.</p><form id="login-form" class="auth-fields"><label class="auth-field">Username<input class="field" name="username" autocomplete="username" required></label>${passwordField("Password", "password", "current-password", 0)}<button class="primary-button auth-submit">Sign in</button></form><p class="auth-switch"><button class="text-button" data-auth-mode="recover">Forgot password?</button></p><p class="auth-switch">New to Daymark on this device? <button class="text-button" data-auth-mode="register">Create a profile</button></p>`,
+        register: `<h2>Create your profile</h2><p class="auth-subtitle">One profile per device. Your profile and tracker data stay in this browser.</p><form id="signup-form" class="auth-fields"><label class="auth-field">Full name<input class="field" name="fullName" autocomplete="name" maxlength="80" required></label><label class="auth-field">Username<input class="field" name="username" autocomplete="username" minlength="3" maxlength="24" required></label><label class="auth-field">Phone number<input class="field" name="phone" type="tel" autocomplete="tel" required></label>${passwordField("Password", "password", "new-password")}${passwordField("Confirm password", "confirmPassword", "new-password")}<button class="primary-button auth-submit">Create profile</button></form><p class="auth-switch">Already have a profile here? <button class="text-button" data-auth-mode="login">Sign in</button></p>`,
+        login: `<h2>Welcome back</h2><p class="auth-subtitle">Sign in to your local Daymark profile.</p><form id="login-form" class="auth-fields"><label class="auth-field">Username<input class="field" name="username" autocomplete="username" required></label>${passwordField("Password", "password", "current-password", 0)}<button class="primary-button auth-submit">Sign in</button></form><p class="auth-switch"><button class="text-button" data-auth-mode="recover">Forgot password?</button></p>${createProfileLink}`,
         recover: `<h2>Reset your password</h2><p class="auth-subtitle">Enter your username and the phone number saved with the profile, then choose a new password.</p><form id="recover-form" class="auth-fields"><label class="auth-field">Username<input class="field" name="username" autocomplete="username" required></label><label class="auth-field">Phone number<input class="field" name="phone" type="tel" autocomplete="tel" required></label>${passwordField("New password", "password", "new-password")}${passwordField("Confirm new password", "confirmPassword", "new-password")}<button class="primary-button auth-submit">Reset password</button></form><p class="notice-copy">Offline reset checks the saved phone number on this device. It does not send an SMS or prove identity.</p><p class="auth-switch"><button class="text-button" data-auth-mode="login">Back to sign in</button></p>`
       };
       if (!existingProfiles && authMode === "login") authMode = "register";
-      if (authMode === "register" && existingProfiles && Object.keys(users).length > 0) {
-        forms.register = `<h2>Create another profile</h2><p class="auth-subtitle">Each profile has separate tasks and habits on this device.</p><form id="signup-form" class="auth-fields"><label class="auth-field">Full name<input class="field" name="fullName" autocomplete="name" maxlength="80" required></label><label class="auth-field">Username<input class="field" name="username" autocomplete="username" minlength="3" maxlength="24" required></label><label class="auth-field">Phone number<input class="field" name="phone" type="tel" autocomplete="tel" required></label>${passwordField("Password", "password", "new-password")}${passwordField("Confirm password", "confirmPassword", "new-password")}<button class="primary-button auth-submit">Create profile</button></form><p class="auth-switch"><button class="text-button" data-auth-mode="login">Back to sign in</button></p>`;
+      if (existingProfiles && authMode === "register") {
+        authMode = "login";
+        authMessage = "Only one profile can be created on this device. Please sign in.";
       }
       root.hidden = false;
       document.getElementById("app-shell").hidden = true;
